@@ -1,9 +1,8 @@
 from fastapi import FastAPI, Request
-import requests
+import httpx
 
 app = FastAPI()
 
-# Данные твоей ИИ-компании
 TELEGRAM_TOKEN = "7714536308:AAFbz8Vtx8kugXLSS-MdejC3qkMB781cink"
 CHAT_ID = "@signalbot_po_ai" 
 
@@ -30,6 +29,8 @@ async def receive_signal(request: Request):
     
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"}
-    requests.post(url, json=payload)
+    
+    async with httpx.AsyncClient() as client:
+        await client.post(url, json=payload)
     
     return {"status": "success"}
